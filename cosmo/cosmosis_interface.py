@@ -34,6 +34,8 @@ def execute(block, setup_stuff):
                  'mass_bias': block.get_double('cosmological_parameters', 'mass_bias'),
     }
     M_err = 0
+    M_lim = 1e14, 1e16
+    z_lim = .5, 2.5
 
     co_params = {'flat': True}
     for me,co in zip(['h', 'Omega_m', 'Omega_b', 'sigma8', 'ns'],
@@ -48,7 +50,7 @@ def execute(block, setup_stuff):
     massfunc = np.array([mass_function.massFunction(M_arr, z, mdef='vir', model='despali16', q_in='M', q_out='dndlnM')
                          for z in z_arr])
     
-    lnlike = deep_proj.lnlike(cosmology, M_arr, z_arr, massfunc, setup_stuff, M_err)
+    lnlike = deep_proj.lnlike(cosmology, M_lim, z_lim, M_arr, z_arr, massfunc, setup_stuff, M_err)
     block.put_double('likelihoods', 'abundance_LIKE', lnlike)
 
     return 0
