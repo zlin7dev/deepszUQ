@@ -8,8 +8,8 @@ import deep_proj
 import pandas as pd
 
 def _read_dataframe(fname='20220413_MF.csv'):
-    assert 'redshift' in dataframe.columns and 'Mvir' in dataframe.columns
     dataframe = pd.read_csv(fname)
+    assert 'redshift' in dataframe.columns and 'Mvir' in dataframe.columns
     if 'split' not in dataframe:
         import numpy as np
         dataframe = dataframe.iloc[np.random.RandomState(7).choice(dataframe.index, int(0.2 * len(dataframe)), replace=False)]
@@ -24,7 +24,7 @@ def setup(options):
 def execute(block, setup_stuff):
     cosmology = {
                  'Omega_m': block.get_double('cosmological_parameters', 'Omega_m'),
-                 'Omega_b': block.get_double('cosmological_parameters', 'Omega_b'),
+                 'Omega_b': 0.044, #block.get_double('cosmological_parameters', 'Omega_b'),
                  'Omega_l': block.get_double('cosmological_parameters', 'omega_lambda'),
                  'w0': block.get_double('cosmological_parameters', 'w'),
                  'wa': block.get_double('cosmological_parameters', 'wa'),
@@ -32,12 +32,12 @@ def execute(block, setup_stuff):
                  'sigma8': block.get_double('cosmological_parameters', 'sigma_8'),
                  'ns': block.get_double('cosmological_parameters', 'n_s'),
                  'mass_bias': block.get_double('cosmological_parameters', 'mass_bias'),
+                 'Tcmb0' : 2.726,
     }
     M_err = 0
-
     co_params = {'flat': True}
-    for me,co in zip(['h', 'Omega_m', 'Omega_b', 'sigma8', 'ns'],
-                     ['H0', 'Om0', 'Ob0', 'sigma8', 'ns']):
+    for me,co in zip(['h', 'Omega_m', 'Omega_b', 'sigma8', 'ns', 'Tcmb0'],
+                     ['H0', 'Om0', 'Ob0', 'sigma8', 'ns', 'Tcmb0']):
         co_params[co] = cosmology[me]
     co_params['H0']*= 100
 
